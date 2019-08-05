@@ -288,8 +288,7 @@ namespace Microsoft.Build.BackEnd
 #if FEATURE_PIPE_SECURITY
             PipeSecurity remoteSecurity = nodeStream.GetAccessControl();
 #else
-            var remoteSecurity = new PipeSecurity(nodeStream.SafePipeHandle, System.Security.AccessControl.AccessControlSections.Access |
-                System.Security.AccessControl.AccessControlSections.Owner | System.Security.AccessControl.AccessControlSections.Group);
+            var remoteSecurity = new PipeSecurity();
 #endif
             IdentityReference remoteOwner = remoteSecurity.GetOwner(typeof(SecurityIdentifier));
             if (remoteOwner != identifier)
@@ -337,7 +336,7 @@ namespace Microsoft.Build.BackEnd
                 nodeStream.WriteLongForHandshake(hostHandshake);
 
                 CommunicationsUtilities.Trace("Reading handshake from pipe {0}", pipeName);
-#if NETCOREAPP2_1
+#if NETCOREAPP3_0
                 long handshake = nodeStream.ReadLongForHandshake(timeout);
 #else
                 long handshake = nodeStream.ReadLongForHandshake();
